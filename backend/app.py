@@ -35,7 +35,8 @@ def create_app(reset_db=False):
             DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
     # Gunakan URL yang sudah dimodifikasi (dari Render) atau fallback lokal
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL or 'postgresql+psycopg://py_ai:python@localhost:5432/python_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL or 'postgresql+psycopg2://py_ai:python@localhost:5432/python_db'
+
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # -------------------------------------------------------------
