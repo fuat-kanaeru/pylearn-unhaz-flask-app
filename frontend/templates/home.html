@@ -30,23 +30,31 @@
   
   <section class="features py-5 text-center">
     <div class="container-fluid"> <!-- Menggunakan container-fluid agar mengisi content-wrapper -->
-      <h2 class="fw-bold mb-5 text-white">Kenapa Belajar di PyLearn?</h2>
+      <h2 data-aos="fade-down"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="fw-bold mb-5 text-white">Kenapa Belajar di PyLearn?</h2>
       <div class="row">
-        <div class="col-md-4 mb-4">
+        <div data-aos="fade-down"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="col-md-4 mb-4">
           <div class="feature-card p-4 shadow-sm h-100">
             <i class="bi bi-lightning-charge text-accent fs-1 mb-3"></i>
             <h5 class="fw-semibold">Belajar Interaktif</h5>
             <p class="text-muted">Modul disusun secara interaktif agar kamu cepat paham konsep Python for AI.</p>
           </div>
         </div>
-        <div class="col-md-4 mb-4">
+        <div data-aos="fade-down"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="col-md-4 mb-4">
           <div class="feature-card p-4 shadow-sm h-100">
             <i class="bi bi-journal-code text-accent fs-1 mb-3"></i>
             <h5 class="fw-semibold">Modul Gratis</h5>
             <p class="text-muted">Akses semua materi tanpa biaya. Belajar tanpa batas untuk semua remaja aikmel utara.</p>
           </div>
         </div>
-        <div class="col-md-4 mb-4">
+        <div data-aos="fade-down"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="col-md-4 mb-4">
           <div class="feature-card p-4 shadow-sm h-100">
             <i class="bi bi-cpu text-accent fs-1 mb-3"></i>
             <h5 class="fw-semibold">Berfokus pada AI</h5>
@@ -58,20 +66,26 @@
   </section>
 
   <!-- AI & Python Explanation Section -->
-  <section class="ai-explanation py-5">
+  <section data-aos="fade-down"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="ai-explanation py-5">
     <div class="container-fluid">
       <div class="row align-items-center">
         
         <!-- Kolom Kiri: Ilustrasi atau Icon -->
         <div class="col-md-5 mb-4 mb-md-0 text-center">
-          <img src="{{ url_for('static', filename='images/Ai.jpg') }}" 
+          <img data-aos="fade-right"
+     data-aos-easing="linear"
+     data-aos-duration="1000" src="{{ url_for('static', filename='images/Ai.jpg') }}" 
       alt="Ilustrasi AI" 
       class="img-fluid rounded-4 shadow-lg" 
               style="max-height: 350px; object-fit: cover; width: 100%;">     
         </div>
 
         <!-- Kolom Kanan: Teks Penjelasan -->
-        <div class="col-md-7 text-md-start text-center">
+        <div data-aos="fade-left"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="col-md-7 text-md-start text-center">
           <h2 class="fw-bold mb-4 text-white">Jalur Karir Masa Depan: AI & Python</h2>
           <p class="lead mb-3 text-muted">
             Python adalah bahasa wajib di era Artificial Intelligence (AI). 
@@ -94,11 +108,15 @@
   </section>
 
  <section id="contact-section" class="contact-form-section text-center">
-    <div class="container-fluid">
+    <div data-aos="fade-down"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="container-fluid">
         <h2 class="fw-bold mb-3 text-white">Hubungi Kami</h2>
         <p class="lead mb-5 text-white">Punya pertanyaan, kritik, atau saran? Kirim pesan kepada tim PyLearn.</p>
         
-        <div class="row justify-content-center">
+        <div data-aos="fade-down"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="row justify-content-center">
             <div class="col-lg-8">
                 <form method="POST" action="{{ url_for('main.contact_submit') }}"> 
                     <div class="row mb-4">
@@ -139,8 +157,12 @@
   
   <section class="cta-bottom py-5 text-center">
     <div class="container-fluid">
-      <h2 class="fw-bold mb-3 text-white">Tunggu Apa Lagi? Mulai Coding Sekarang!</h2>
-      <p class="lead mb-5 text-white">Bergabunglah dan siap berkarir di bidang Data Science dan AI.</p>
+      <h2 data-aos="fade-right"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="fw-bold mb-3 text-white">Tunggu Apa Lagi? Mulai Coding Sekarang!</h2>
+      <p data-aos="fade-left"
+     data-aos-easing="linear"
+     data-aos-duration="1000" class="lead mb-5 text-white">Bergabunglah dan siap berkarir di bidang Data Science dan AI.</p>
       
       {% if not user_name %}
         <!-- Tombol CTA besar untuk pengguna yang belum login -->
