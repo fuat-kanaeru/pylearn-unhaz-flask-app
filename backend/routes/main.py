@@ -419,34 +419,5 @@ def contact_submit():
         # Redirect ke halaman utama dan kembali ke bagian kontak
         return redirect(url_for('main.home', _external=True) + '#contact-section')
 
-# === KODE ADMIN SEMENTARA (MASUKKAN EMAIL & PASSWORD ANDA) ===
 
-from backend.models import db, User 
-from werkzeug.security import generate_password_hash
-
-@main_bp.route('/buat-admin-rahasia') # <-- Route rahasia yang akan diakses
-def create_admin_secretly():
-
-    # GANTI DENGAN KREDENSIAL YANG ANDA INGINKAN!
-    admin_email = 'admin@pylearn.com' 
-    admin_password = 'taufik' 
-
-    # Logika untuk membuat pengguna dengan is_admin=True
-    existing_user = User.query.filter_by(email=admin_email).first()
-
-    if not existing_user:
-        hashed_password = generate_password_hash(admin_password, method='scrypt')
-        new_admin = User(
-            email=admin_email,
-            password=hashed_password,
-            is_admin=True 
-        )
-
-        db.session.add(new_admin)
-        db.session.commit()
-        return "Akun admin berhasil dibuat. SEGERA HAPUS KODE INI!"
-    else:
-        return "Admin sudah ada."
-
-# === AKHIR KODE ADMIN SEMENTARA ===
 
