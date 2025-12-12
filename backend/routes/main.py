@@ -419,33 +419,4 @@ def contact_submit():
         # Redirect ke halaman utama dan kembali ke bagian kontak
         return redirect(url_for('main.home', _external=True) + '#contact-section')
 
-# === Route Khusus UNTUK MEMBUAT ADMIN PERTAMA DI RENDER (HAPUS SETELAH DIGUNAKAN) ===
-@main_bp.route('/create-admin-secretly')
-def create_admin_secretly():
-    from backend.models import db, User # Import models
-    from werkzeug.security import generate_password_hash
 
-    # Ganti email dan password sesuai keinginan Anda
-    admin_email = 'admin@pylearn.com'
-    admin_password = 'Fuat Kanaeru' 
-
-    # 1. Cek apakah admin sudah ada
-    existing_user = User.query.filter_by(email=admin_email).first()
-
-    if not existing_user:
-        # 2. Buat objek User baru
-        hashed_password = generate_password_hash(admin_password, method='scrypt')
-        new_admin = User(
-            email=admin_email,
-            password=hashed_password,
-            is_admin=True # PENTING: Set is_admin ke True
-        )
-
-        # 3. Tambahkan ke database
-        db.session.add(new_admin)
-        db.session.commit()
-        return f"<h1>✅ Akun Admin '{admin_email}' berhasil dibuat! HAPUS ROUTE INI DARI KODE SEKARANG!</h1>"
-    else:
-        return f"<h1>⚠️ Akun Admin '{admin_email}' sudah ada. Silakan HAPUS ROUTE INI DARI KODE!</h1>"
-
-# === AKHIR DARI ROUTE ADMIN KHUSUS ===
