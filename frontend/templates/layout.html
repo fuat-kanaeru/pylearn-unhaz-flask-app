@@ -9,6 +9,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<!-- aimasi css -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   
   <!-- Hapus inline style untuk navbar karena sudah di handle di style.css -->
 </head>
@@ -153,12 +156,12 @@
         display: inline-block; 
         background-color: #FFFFFF; 
         color: #000000;          
-        padding: 5px 10px;      
-        border-radius: 999px;    
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+        padding: 5px 10px;      /* DIKECILKAN: Padding minimal */
+        border-radius: 999px;    /* DIBULATKAN: Nilai tinggi untuk bentuk kapsul penuh */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow sangat tipis */
         font-weight: bold; 
         line-height: 1.5;
-        font-size: 0.8rem; 
+        font-size: 0.8rem; /* DIKECILKAN: Teks sangat kecil */
     ">
         
         <img src="{{ url_for('static', filename='images/logo-kkn.jpg') }}" 
@@ -194,5 +197,12 @@
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- animasi js -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+  AOS.init();
+</script>
 </body>
 </html>
