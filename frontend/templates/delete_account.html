@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Delete Account — PyLearn{% endblock %}
+{% block content %}
+<div class="card p-4 mx-auto text-center" style="max-width:520px; margin-top:32px;">
+  <h3 class="text-danger mb-3">Hapus Akun</h3>
+  <p class="mb-4">Apakah Anda yakin ingin menghapus akun <strong>{{ user['name'] }}</strong> ? Tindakan ini tidak dapat dibatalkan.</p>
+
+  <form method="POST">
+    <button class="btn btn-danger w-100 mb-2" type="submit">Ya, Hapus Akun</button>
+    <a class="btn btn-secondary w-100" href="{{ url_for('auth.profile') }}">Batal</a>
+  </form>
+</div>
+{% endblock %}

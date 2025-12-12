@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}Modules — PyLearn{% endblock %}
+{% block content %}
+
+<!-- Menambahkan content-wrapper untuk membatasi lebar konten -->
+<div class="content-wrapper"> 
+  
+  <!-- Mengubah warna teks judul halaman menjadi putih untuk kontras -->
+  <h2 class="mt-4 mb-3 text-white fw-bold">Modul Pembelajaran</h2>
+
+  <div class="row g-4">
+    {% for mod in modules %}
+    {% set progress_score = mod['total_score'] if mod['total_score'] is not none else 0 %}
+    {% set max_score = mod['max_score'] if mod['max_score'] is not none and mod['max_score'] > 0 else 1 %}
+    
+    {% if mod['max_score'] is not none and mod['max_score'] > 0 %}
+        {% set percentage = (progress_score * 100 / max_score) | round(0) %}
+    {% else %}
+        {% set percentage = 0 %}
+    {% endif %}
+
+    <div class="col-md-4" >
+      <!-- Card kini menggunakan gaya glassmorphism dari style.css -->
+      <div class="card p-4 h-100" style="border-top: 5px solid #21a0c7;">
+        <!-- PERBAIKAN: Mengubah text-primary menjadi text-white (atau warna yang terang) -->
+        <h5 class="text-white fw-bold">{{ mod['title'] }}</h5> 
+        <!-- PERBAIKAN: Menggunakan text-muted yang sudah didefinisikan sebagai abu-abu terang -->
+        <p class="text-muted">{{ mod['description'] }}</p>
+        
+        <div class="mt-auto pt-3">
+            <!-- PERBAIKAN: Menggunakan text-muted agar teks Progres Anda terbaca -->
+            <small class="text-white d-block mb-2">
+                Progres Anda: 
+                {% if percentage == 100 %}
+                    <!-- Warna hijau untuk Selesai -->
+                    <span class="fw-bold text-success">Selesai</span>
+                {% elif mod['total_score'] is not none %}
+                    <!-- Warna kuning untuk progres berjalan -->
+                    <span class="fw-bold text-warning">{{ percentage }}%</span>
+                {% else %}
+                    <!-- Warna abu-abu terang untuk Belum Dikerjakan -->
+                    <span class="fw-bold text-muted">Belum Dikerjakan</span>
+                {% endif %}
+            </small>
+            
+            <div class="progress mb-3" style="height: 8px; background-color: rgba(255, 255, 255, 0.1);">
+                <div class="progress-bar" role="progressbar" 
+                    style="width: {{ percentage }}%; background-color: #5882FA;" 
+                    aria-valuenow="{{ percentage }}" 
+                    aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+          <!-- Memastikan tombol tetap menggunakan btn-primary (biru) -->
+          <a class="btn btn-info w-100" href="{{ url_for('main.module_detail', id=mod['id']) }}" >Lihat Pelajaran</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

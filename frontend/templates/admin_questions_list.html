@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Kelola Soal — PyLearn{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-warning"><i class="bi bi-question-circle"></i> Kelola Soal Latihan</h2>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-warning">
+      <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
+    </a>
+  </div>
+
+  {% if questions %}
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-warning">
+          <tr>
+            <th class="text-center" width="60">#</th>
+            <th>Pertanyaan</th>
+            <th>Jawaban</th>
+            <th>Poin</th>
+            <th>Modul / Pelajaran</th>
+            <th class="text-center" width="150">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for q in questions %}
+          <tr>
+            <td class="text-center fw-semibold">{{ loop.index }}</td>
+            <td style="max-width: 300px;">{{ q.question }}</td>
+            <td>{{ q.answer }}</td>
+            <td>{{ q.points }}</td>
+            <td>{{ q.module_title }} / {{ q.lesson_title }}</td>
+            <td class="text-center">
+              <form method="POST" action="{{ url_for('admin.delete_question', id=q.id) }}"
+                    onsubmit="return confirm('Yakin ingin menghapus soal ini?');">
+                <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3">
+                  <i class="bi bi-trash"></i> Hapus
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+    <div class="alert alert-warning text-center shadow-sm mt-4">Belum ada soal yang ditambahkan.</div>
+  {% endif %}
+</div>
+{% endblock %}

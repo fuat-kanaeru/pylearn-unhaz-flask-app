@@ -1,0 +1,184 @@
+{% extends "layout.html" %}
+{% block title %}Admin Dashboard — PyLearn{% endblock %}
+
+{% block content %}
+
+<div class="content-wrapper">
+    <h2 class="mt-4 mb-6 text-3xl font-bold" style="color: var(--white);">
+        <span class="text-accent">⚙️</span> Dashboard Administrator
+    </h2>
+
+{% if session.get('is_admin') %}
+<div class="max-w-7xl mx-auto">
+
+    <!-- BAGIAN: Kelola Konten (Menggunakan Card Glassmorphism) -->
+    <div class="card mb-5 p-4">
+        <h5 class="mb-3 text-xl font-semibold" style="color: var(--primary);">
+            <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 1.5rem; height: 1.5rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37h.001z"></path></svg> Opsi Pengelolaan & Penghapusan Konten
+        </h5>
+        <p class="text-text text-sm mb-4">
+            Gunakan tautan ini untuk melihat daftar konten, menghapus, atau mengelola akun pengguna.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+            <!-- Menggunakan kelas btn-outline-primary kustom Anda -->
+            <a href="{{ url_for('admin.modules_list') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                📚 Kelola Modul
+            </a>
+            <a href="{{ url_for('admin.lessons_list') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                🧾 Kelola Pelajaran
+            </a>
+            <a href="{{ url_for('admin.questions_list') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                ❓ Kelola Soal
+            </a>
+            <a href="{{ url_for('admin.users_progress_list') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                🧑‍💻 Kelola Pengguna
+            </a>
+            
+            <!-- TAUTAN BARU UNTUK KELOLA KONTAK -->
+            <!-- SEMENTARA MENGGUNAKAN ENDPOINT YANG ADA (users_progress_list) UNTUK MENGHINDARI BUILDERROR. PASTIKAN ROUTE 'admin.contact_messages_list' DITAMBAHKAN DI PYTHON! -->
+            <a href="{{ url_for('admin.contact_messages') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                📧 Kelola Pesan Kontak
+            </a>
+
+            <!-- TAUTAN BARU UNTUK TAMBAH ADMIN -->
+            <a href="{{ url_for('admin.add_admin') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3" style="background-color: var(--accent); color: var(--background); border-color: var(--accent); font-weight: 600;">
+                👑 Tambah Admin Baru
+            </a>
+        </div>
+    </div>
+
+    <!-- BAGIAN: Tambah Konten Baru -->
+    <h4 class="mt-5 mb-4 text-2xl font-semibold" style="color: var(--white);">
+        <span style="color: #4CAF50;">➕</span> Tambah Konten Baru
+    </h4>
+
+    <div class="row g-4 mb-5">
+
+        <!-- FORM TAMBAH MODUL (Glass Card + Primary Blue Accent) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card p-4 h-100" style="border-top: 5px solid var(--primary);">
+                <h5 class="mb-4 text-xl font-bold" style="color: var(--primary);">
+                    <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 1.5rem; height: 1.5rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg> Modul Utama
+                </h5>
+                <form method="POST" action="{{ url_for('admin.add_content') }}">
+                    <input type="hidden" name="content_type" value="module">
+                    <div class="mb-3">
+                        <label class="form-label text-white mb-1">Judul Modul</label>
+                        <input name="module_title" class="form-control" placeholder="Contoh: Pemrograman Python" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-white mb-1">Deskripsi</label>
+                        <textarea name="module_description" class="form-control" rows="2" placeholder="Deskripsi singkat modul"></textarea>
+                    </div>
+                    <!-- Menggunakan btn-primary kustom Anda -->
+                    <button class="btn btn-primary w-100" type="submit">Tambah Modul</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FORM UPLOAD PDF (Glass Card + Danger Red Accent) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card p-4 h-100" style="border-top: 5px solid #FF4D4D;"> <!-- Menggunakan warna Merah Kustom -->
+                <h5 class="mb-4 text-xl font-bold" style="color: #FF4D4D;">
+                    <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 1.5rem; height: 1.5rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 014 4v2a1 1 0 01-1 1h-6.28a1 1 0 01-.76-.328l-.34-1.353a1 1 0 00-1.838.455l.777 3.098a1 1 0 01-1.077 1.34L7.5 16h-.88z"></path></svg> Upload Materi dari PDF
+                </h5>
+                <p class="text-text text-sm mb-4">
+                    File PDF akan diunggah ke Google Drive.
+                </p>
+
+                <form method="POST" action="{{ url_for('admin.add_lesson') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label text-white mb-1">Judul Pelajaran</label>
+                        <input name="lesson_title" class="form-control" placeholder="Contoh: Variabel dan Tipe Data" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-white mb-1">Pilih Modul</label>
+                        <select name="module_id" class="form-control" required>
+                            {% for module in modules %}
+                                <option value="{{ module.id }}">{{ module.title }}</option>
+                            {% else %}
+                                <option value="" disabled>-- Buat Modul Dahulu --</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white mb-1">File PDF (Maks 10MB)</label>
+                        <!-- Menggunakan input file default dengan style kustom agar konsisten -->
+                        <input type="file" name="lesson_pdf" class="form-control" accept="application/pdf" required style="
+                            color: var(--white); 
+                            background-color: rgba(255, 255, 255, 0.05);
+                            border-color: rgba(255, 77, 77, 0.5); /* Border merah halus */
+                        ">
+                    </div>
+
+                    <button class="btn w-100" style="background-color: #FF4D4D; color: var(--white); font-weight: 600; border-radius: 12px; transition: all 0.3s ease;" 
+                            onmouseover="this.style.backgroundColor='#CC0000'" onmouseout="this.style.backgroundColor='#FF4D4D'" type="submit">
+                        <svg class="w-5 h-5 inline me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 014 4v2a1 1 0 01-1 1h-6.28a1 1 0 01-.76-.328l-.34-1.353a1 1 0 00-1.838.455l.777 3.098a1 1 0 01-1.077 1.34L7.5 16h-.88z"></path></svg> Upload ke Google Drive
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- FORM TAMBAH SOAL (Glass Card + Accent Yellow/Kuning) -->
+        <div class="col-lg-4 col-md-12">
+            <div class="card p-4 h-100" style="border-top: 5px solid var(--accent);">
+                <h5 class="mb-4 text-xl font-bold" style="color: var(--accent);">
+                    <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 1.5rem; height: 1.5rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9.247a1 1 0 011.006.54c.482.883 1.258 1.542 2.14 1.946l.72.336 1.05-3.696a1 1 0 011.517-.61L21 6"></path></svg> Tambah Soal Latihan
+                </h5>
+
+                <form method="POST" action="{{ url_for('admin.add_content') }}">
+                    <input type="hidden" name="content_type" value="question">
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-12 mb-3">
+                            <label class="form-label text-white mb-1">Pilih Pelajaran</label>
+                            <select name="lesson_id" class="form-control" required>
+                                {% for lesson in lessons %}
+                                    <option value="{{ lesson['id'] }}">{{ lesson['module_title'] }} — {{ lesson['title'] }}</option>
+                                {% else %}
+                                    <option value="" disabled>-- Buat Pelajaran Dahulu --</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label text-white mb-1">Poin</label>
+                            <input name="question_points" type="number" class="form-control" value="10">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-white mb-1">Pertanyaan</label>
+                        <textarea name="question_text" class="form-control" rows="2" placeholder="Tuliskan pertanyaan di sini" required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-white mb-1">Jawaban Benar</label>
+                        <input name="question_answer" class="form-control" placeholder="Tuliskan jawaban benar" required>
+                        <small class="d-block mt-1 text-text">Jawaban tidak *case-sensitive*.</small>
+                    </div>
+                    
+                    <!-- Menggunakan btn-accent kustom Anda -->
+                    <button class="btn btn-accent w-100" type="submit">
+                        <svg class="w-5 h-5 inline me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Tambah Soal
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div> <!-- end row -->
+
+</div> <!-- end container -->
+
+{% else %}
+    <div class="card p-4" style="border-top: 5px solid #FF4D4D; color: var(--white);">
+        <h5 class="text-danger">Akses Ditolak</h5>
+        <p class="text-text">Anda tidak memiliki izin administrator.</p>
+    </div>
+{% endif %}
+
+</div>
+
+{% endblock %}

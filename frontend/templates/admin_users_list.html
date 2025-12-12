@@ -1,0 +1,249 @@
+{% extends "layout.html" %}
+{% block title %}Daftar Akun Pengguna{% endblock %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bolder display-5 text-white mb-2" style="text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);">
+            <i class="bi bi-person-lines-fill me-3 text-accent"></i> Administrasi Pengguna
+        </h2>
+        <p class="text-muted fw-light fst-italic">Tinjauan dan manajemen akun pengguna PyLearn.</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h4 class="mb-2 mb-md-0 text-white fw-bold">
+            <span class="card p-2 rounded-pill shadow-sm border-0 d-inline-block">
+                <i class="bi bi-person-circle me-1 text-primary"></i> Total Akun: {{ users|length }}
+            </span>
+        </h4>
+        
+        <!-- === KOLOM PENCARIAN (Warna Disesuaikan) === -->
+        <div class="input-group search-bar rounded-pill shadow-sm overflow-hidden flex-grow-1 flex-md-grow-0 bg-search-dark" style="max-width: 350px;">
+            <span class="input-group-text bg-search-dark border-0"><i class="bi bi-search text-primary"></i></span>
+            <input type="text" id="searchInput" onkeyup="filterTable()" class="form-control border-0 text-white" placeholder="Cari nama pengguna atau email..." aria-label="Cari pengguna" style="background-color: var(--bg-light); color: var(--white);">
+        </div>
+        <!-- ============================================= -->
+        
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('admin.add_user') }}" class="btn btn-primary rounded-pill px-4 shadow-sm transition-all hover-scale fw-bold">
+                <i class="bi bi-person-plus-fill me-2"></i> Tambah User Baru
+            </a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary rounded-pill px-4 shadow-sm transition-all hover-scale">
+                ← Kembali ke Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="card p-4 shadow-lg border-0 rounded-4">
+        {% if users %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover table-borderless align-middle caption-top" id="userTable">
+                    <caption class="text-muted fst-italic">Daftar lengkap pengguna terdaftar (termasuk Admin).</caption>
+                    <thead class="border-bottom border-muted-subtle">
+                        <tr class="text-white text-uppercase">
+                            <th scope="col" class="fw-bold">#</th>
+                            <th scope="col" class="fw-bold">Nama Pengguna</th>
+                            <th scope="col" class="fw-bold">Email</th>
+                            <th scope="col" class="fw-bold">Status</th>
+                            <th scope="col" class="fw-bold">Progres Keseluruhan ({{ total_lessons }} Pelajaran)</th>
+                            <th scope="col" class="fw-bold text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr class="user-row">
+                            <th scope="row" class="text-muted">{{ loop.index }}</th>
+                            <td class="user-name-cell">{{ user.name }}</td>
+                            <td class="user-email-cell"><small class="text-muted">{{ user.email }}</small></td>
+                            <td>
+                                {% if user.is_admin %}
+                                    <span class="badge bg-danger text-white p-2 fw-normal rounded-pill"><i class="bi bi-shield-fill me-1"></i> ADMIN</span>
+                                {% else %}
+                                    <span class="badge bg-primary text-white p-2 fw-normal rounded-pill" style="background-color: var(--primary) !important;"><i class="bi bi-person-fill me-1"></i> USER</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="bi bi-rocket-takeoff-fill me-2 text-accent"></i>
+                                    <small class="text-white fw-bold me-2">{{ user.total_progress_percent }}%</small>
+                                </div>
+                                
+                                <div class="progress progress-admin custom-progress" style="height: 8px;">
+                                    {% set progress_color = 'progress-bar-success' if user.total_progress_percent == 100 else 'progress-bar-info' if user.total_progress_percent > 50 else 'progress-bar-warning' %}
+                                    <div class="progress-bar {{ progress_color }}" 
+                                         role="progressbar" 
+                                         style="width: {{ user.total_progress_percent }}%;" 
+                                         aria-valuenow="{{ user.total_progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <small class="text-muted mt-1 d-block">{{ user.completed_lessons }} dari {{ total_lessons }} pelajaran selesai</small>
+                            </td>
+                            <td class="text-center d-flex gap-2 justify-content-center">
+                                {% set is_current_admin = user.id == session['user_id'] %}
+                                
+                                <a href="{{ url_for('admin.update_user_password', user_id=user.id) }}"
+                                   class="btn btn-sm btn-outline-warning rounded-3"
+                                   title="Ubah Password User">
+                                    <i class="bi bi-key-fill me-1"></i> Reset Pass
+                                </a>
+
+                                <form method="POST" action="{{ url_for('admin.delete_user', id=user.id) }}" 
+                                      onsubmit="return confirm('❗ PERINGATAN: Anda yakin ingin menghapus akun {{ user.name }} secara permanen? Semua data progresnya akan HILANG!')" 
+                                      style="display: inline;">
+                                    
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-danger rounded-3" 
+                                            title="Hapus Akun Pengguna"
+                                            {% if is_current_admin %}disabled{% endif %}>
+                                        <i class="bi bi-trash-fill me-1"></i> Hapus Akun
+                                    </button>
+                                </form>
+                                
+                                {% if is_current_admin %}
+                                    <small class="text-danger d-block mt-1 fw-bold">Akun Aktif Anda</small>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="noResults" class="text-center py-4 text-muted" style="display: none;">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Tidak ada pengguna yang cocok dengan kriteria pencarian.
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-person-x display-4 text-muted mb-3"></i>
+                <p class="text-muted mb-0">Belum ada pengguna terdaftar selain Anda.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Bagian Styling (CSS) -->
+<style>
+    :root {
+        --primary: #5882FA;
+        --accent: #FFC300;
+        --bg-light: #2A3052;
+        --muted: #B0B0B0;
+        --white: #ffffff;
+        --glass-bg: rgba(255, 255, 255, 0.15);
+    }
+    
+    .text-secondary { color: var(--muted) !important; }
+    .text-info { color: var(--primary) !important; }
+    .text-warning { color: var(--accent) !important; }
+
+    .table.table-dark {
+        --bs-table-bg: transparent; 
+        --bs-table-hover-bg: rgba(255, 255, 255, 0.05); 
+    }
+    
+    .table-hover > tbody > tr:hover {
+        transition: background-color 0.3s ease;
+    }
+    
+    .progress-admin {
+        background-color: var(--bg-light);
+        border-radius: 5px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .progress-bar-info {
+        background: linear-gradient(90deg, var(--primary), #82A2FF); 
+    }
+    .progress-bar-warning {
+        background: linear-gradient(90deg, var(--accent), #FFD966); 
+    }
+    .progress-bar-success {
+        background: linear-gradient(90deg, #10803C, #4caf50); 
+    }
+    
+    .progress-bar {
+        transition: width 0.6s ease;
+    }
+
+    /* Warna baru untuk kolom pencarian */
+    .bg-search-dark {
+        background-color: var(--bg-light) !important;
+        /* Tambahkan border yang sedikit terlihat */
+        border: 1px solid rgba(255, 255, 255, 0.1); 
+    }
+
+    /* Style untuk kotak pencarian */
+    .search-bar .input-group-text {
+        border-top-left-radius: 50rem;
+        border-bottom-left-radius: 50rem;
+        /* Hapus warna latar belakang yang di-override oleh bg-white sebelumnya */
+    }
+    .search-bar .form-control {
+        border-top-right-radius: 50rem;
+        border-bottom-right-radius: 50rem;
+        /* Hapus warna latar belakang yang di-override oleh bg-white sebelumnya */
+    }
+    
+    /* Untuk tampilan mobile agar elemen tidak bertumpuk buruk */
+    @media (max-width: 768px) {
+        .d-flex.justify-content-between.align-items-center.mb-4 {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+        .search-bar {
+            margin-top: 1rem;
+            max-width: 100% !important;
+        }
+        .d-flex.gap-2.mt-3.mt-md-0 {
+            width: 100%;
+            justify-content: space-between !important;
+        }
+    }
+</style>
+
+<!-- Bagian JavaScript -->
+<script>
+    /**
+     * Fungsi untuk menyaring baris tabel berdasarkan input pencarian.
+     * Menggunakan JavaScript murni untuk performa klien-sisi yang cepat.
+     */
+    function filterTable() {
+        const input = document.getElementById("searchInput");
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById("userTable");
+        const tbody = table.getElementsByTagName("tbody")[0];
+        const tr = tbody.getElementsByTagName("tr");
+        const noResults = document.getElementById("noResults");
+        
+        let found = false;
+        
+        // Iterasi melalui semua baris tabel
+        for (let i = 0; i < tr.length; i++) {
+            // Ambil sel Nama Pengguna (indeks 0) dan Email (indeks 1) di dalam <td>
+            const nameCell = tr[i].getElementsByTagName("td")[0]; 
+            const emailCell = tr[i].getElementsByTagName("td")[1]; 
+            
+            if (nameCell || emailCell) {
+                const nameText = nameCell ? nameCell.textContent.toUpperCase() : '';
+                const emailText = emailCell ? emailCell.textContent.toUpperCase() : '';
+
+                // Periksa apakah teks pencarian ada di Nama atau Email
+                if (nameText.includes(filter) || emailText.includes(filter)) {
+                    tr[i].style.display = ""; // Tampilkan baris
+                    found = true;
+                } else {
+                    tr[i].style.display = "none"; // Sembunyikan baris
+                }
+            }
+        }
+
+        // Tampilkan pesan "Tidak ada hasil" jika tidak ada yang ditemukan
+        if (filter === "" || found) {
+            noResults.style.display = "none";
+        } else {
+            noResults.style.display = "block";
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,438 @@
+/* Import font modern */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* ==================================== */
+/* 💡 GLASS MORPHISM VARIABLES */
+/* ==================================== */
+:root {
+  --primary: #5882FA;          /* Biru Cerah/Azure Baru */
+  --primary-dark: #1240AB;     /* Navy Baru */
+  --accent: #FFC300;           /* Kuning Cerah (Aksen CTA) */
+  
+  /* Latar belakang gelap untuk menonjolkan efek glass */
+  --bg: #1A1D3D;               /* Deep Navy Background */
+  --bg-light: #2A3052;          /* Latar belakang sekunder */
+  
+  /* PERBAIKAN: Mengganti warna teks utama (sebelumnya gelap) menjadi putih untuk keterbacaan di latar belakang gelap */
+  --text-dark: #2C3E50;        /* Teks gelap/Navy (Digunakan hanya di atas latar belakang terang) */
+  --text: var(--white);        /* Teks utama (default white) */
+  --glass-bg: rgba(255, 255, 255, 0.15); /* Transparan Putih 15% */
+  --glass-border: rgba(255, 255, 255, 0.25); /* Border halus (#ffffff22) */
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Shadow lembut */
+  --blur-amount: 12px;         /* Blur lembut 12px (10-15px) */
+
+  --white: #ffffff;            /* Putih */
+  --muted: #B0B0B0;            /* Warna teks lembut/sekunder */
+}
+
+/* ====== Struktur Dasar ====== */
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg); /* Menggunakan Deep Navy */
+  color: var(--white); /* Teks utama sekarang Putih */
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.3s;
+  /* PERBAIKAN: Menambahkan padding-top ke body agar konten tidak tertutup navbar fixed */
+  padding-top: 85px; /* Kompensasi tinggi navbar yang diperkirakan sekitar 70-80px */
+}
+
+/* <<< PERBAIKAN DI SINI: Memastikan Judul Halaman Utama Putih */
+h1, h2 {
+    color: var(--white) !important;
+}
+
+/* Bagian utama agar footer tetap di bawah */
+main {
+  flex: 1;
+  width: 100%; 
+  max-width: 100%;
+  padding: 0;
+}
+
+/* Container di dalam main yang menampung konten */
+.content-wrapper {
+    max-width: 1200px; 
+    margin: 0 auto;
+    padding: 1rem;
+    /* Menghapus padding-top karena sudah dipindahkan ke body */
+    padding-top: 0; 
+}
+
+/* ==================================== */
+/* 💡 GLASS MORPHISM: NAVIGATION BAR (Fixed Top) */
+/* ==================================== */
+.navbar {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030;
+  
+  /* Efek Glassmorphism */
+  background: var(--glass-bg); 
+  box-shadow: var(--glass-shadow); 
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount)); 
+  border-bottom: 1px solid var(--glass-border); 
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.navbar-brand, .nav-link {
+    color: var(--white) !important;
+}
+
+.navbar .nav-link {
+  /* PERBAIKAN: Mengatur font-size sedikit lebih kecil untuk kerapian */
+  font-weight: 500;
+  font-size: 0.95rem; 
+  transition: all 0.3s ease;
+  padding-bottom: 8px !important;
+}
+
+.navbar .nav-link i {
+    /* Perbaikan: Mengatur ukuran ikon agar tidak terlalu besar di navbar */
+    font-size: 1.1rem; 
+}
+
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--accent) !important; 
+  text-shadow: 0 0 6px rgba(255, 195, 0, 0.5); 
+  font-weight: 600; 
+  border-bottom: 2px solid var(--accent); 
+}
+
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ====== Teks dan Aksen Warna ====== */
+/* <<< PERBAIKAN DI SINI: Pastikan Aksen dan Warning menggunakan variabel accent yang cerah */
+.text-accent {
+  color: var(--accent) !important; 
+}
+.text-warning {
+    color: var(--accent) !important; 
+}
+.text-maroon {
+  color: var(--white); 
+  font-weight: 700;
+}
+.text-text {
+    /* Menggunakan warna muted/putih agar terbaca di latar belakang gelap */
+    color: var(--muted);
+}
+
+/* ==================================== */
+/* 💡 HOME PAGE: HERO SECTION */
+/* ==================================== */
+.hero-section-container {
+    max-width: 1200px;
+    margin: 0 auto 40px auto; /* Mengurangi margin-top karena padding sudah di body */
+}
+
+.hero {
+  position: relative;
+  background: url('images/bgpy.jpg') center/cover no-repeat; 
+  background-attachment: fixed; 
+  color: var(--white); 
+  overflow: hidden;
+  border-radius: 20px; 
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); 
+  padding: 120px 20px;
+  text-align: center;
+}
+
+.hero .overlay {
+  display: none; 
+}
+
+.hero-content {
+  z-index: 2;
+  padding: 40px;
+  /* Efek Glassmorphism pada konten tengah */
+  background: var(--glass-bg); 
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount)); 
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  box-shadow: var(--glass-shadow);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-weight: 700;
+  font-size: 3rem; 
+}
+
+.hero p {
+  font-size: 1.25rem;
+  font-weight: 300;
+} 
+
+.hero .btn-outline-light {
+  border-width: 2px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.hero .btn-outline-light:hover {
+  /* Menggunakan text-dark di sini karena latar belakangnya cerah saat hover */
+  background: var(--accent);
+  color: var(--text-dark) !important; 
+  border-color: var(--accent);
+}
+
+/* ==================================== */
+/* 💡 GLASS MORPHISM: CARDS & FORM */
+/* ==================================== */
+
+/* <<< PERBAIKAN DI SINI: Menjamin semua heading di dalam card/feature-card berwarna putih */
+.feature-card h1, .feature-card h2, .feature-card h3, 
+.feature-card h4, .feature-card h5, .feature-card h6,
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+    color: var(--white) !important;
+}
+
+/* <<< PERBAIKAN DI SINI: Memastikan teks deskripsi/sekunder menggunakan warna muted yang terang */
+.feature-card p, .card p, /* Teks paragraf biasa */
+.feature-card .text-muted, .card .text-muted,
+.feature-card .text-secondary, .card .text-secondary {
+    color: var(--muted) !important;
+}
+
+.feature-card, .card {
+  /* Efek Glassmorphism */
+  background: var(--glass-bg); 
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount)); 
+  border-radius: 18px;
+  box-shadow: var(--glass-shadow);
+  color: var(--white); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.feature-card:hover, .card:hover {
+  transform: translateY(-8px); 
+  box-shadow: 0 15px 40px rgba(88, 130, 250, 0.4); 
+  background: rgba(255, 255, 255, 0.25); 
+}
+
+/* Form controls inside glass cards */
+.form-control {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.8rem;
+  background-color: rgba(255, 255, 255, 0.05); 
+  color: var(--white);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control::placeholder {
+    color: var(--muted);
+}
+
+.form-control:focus {
+  border-color: var(--accent); 
+  box-shadow: 0 0 8px rgba(255, 195, 0, 0.6); 
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ====== BUTTONS ====== */
+.btn-accent {
+  background: var(--accent); 
+  border: none;
+  border-radius: 12px; 
+  color: var(--text-dark); /* Menggunakan teks gelap di atas aksen cerah */
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.btn-accent:hover {
+  background: var(--primary); 
+  color: var(--white); 
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px rgba(255, 195, 0, 0.6);
+}
+
+.btn-primary {
+  background: var(--primary); 
+  border: none;
+  border-radius: 12px;
+  color: var(--white);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark); 
+  transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+/* ====== Section Explanation Background */
+.ai-explanation {
+    background: var(--bg-light); 
+    color: var(--white);
+    padding: 60px 0;
+    margin-bottom: 40px;
+    border-radius: 18px;
+    box-shadow: var(--glass-shadow);
+}
+
+.ai-explanation .text-muted, .ai-explanation .lead {
+    color: var(--muted) !important;
+}
+
+/* NEW: Style for the new Feature Grid */
+.feature-grid-section {
+    padding: 40px 0;
+    margin-bottom: 40px;
+}
+.key-feature-card {
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount)); 
+    border-radius: 18px;
+    box-shadow: var(--glass-shadow);
+    color: var(--white);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.key-feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(88, 130, 250, 0.4);
+}
+
+/* NEW: Style for Testimonials Section */
+.testimonial-card {
+    background: var(--bg-light); 
+    border-left: 5px solid var(--accent); 
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* NEW: Style for Contact Form */
+.contact-form-section {
+    padding: 60px 0;
+    margin-bottom: 40px;
+    /* Menggunakan style glassmorphism yang sama untuk section ini */
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount)); 
+    border-radius: 18px;
+    box-shadow: var(--glass-shadow);
+}
+
+
+/* ====== FOOTER ====== */
+footer {
+  background: var(--bg-light); 
+  color: var(--white);
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: auto;
+  font-size: 0.9rem;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3); 
+}
+
+footer small{
+  color: var(--muted);
+}
+footer small{
+  color: var(--muted);
+}
+
+footer a {
+  color: var(--accent); 
+  text-decoration: none;
+}
+
+/* ==================================== */
+/* 💡 PERBAIKAN: PROFILE PAGE STYLES */
+/* ==================================== */
+
+/* Menyesuaikan List Group Item agar transparan di dalam card glass */
+.custom-list-item {
+    /* Menggunakan latar belakang transparan agar terlihat efek glassmorphism card */
+    background-color: transparent !important; 
+    border-color: rgba(255, 255, 255, 0.1) !important; /* Garis pemisah halus */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.custom-list-item:hover {
+    /* Sedikit highlight saat hover */
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.custom-list-group.list-group-flush {
+    border-top: none;
+    border-bottom: none;
+}
+
+/* ==================================== */
+/* 💡 PERBAIKAN: LESSON LIST STYLES */
+/* ==================================== */
+
+.custom-lesson-item {
+    /* Efek Glassmorphism Dasar */
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--blur-amount));
+    -webkit-backdrop-filter: blur(var(--blur-amount)); 
+    border-radius: 15px; /* Sudut melengkung */
+    box-shadow: var(--glass-shadow);
+    color: var(--white); /* Teks dasar putih */
+    padding: 1.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.custom-lesson-item:hover {
+    transform: translateY(-5px); /* Efek naik saat hover */
+    box-shadow: 0 10px 30px rgba(88, 130, 250, 0.4); /* Shadow biru lebih kuat */
+    background: rgba(255, 255, 255, 0.25); /* Sedikit lebih terang saat hover */
+}
+
+/* Memastikan teks judul di dalamnya selalu putih */
+.custom-lesson-item h5 {
+    color: var(--white) !important;
+}
+
+/* Style untuk Progress Bar */
+.custom-progress {
+    background-color: var(--bg-light); /* Latar belakang bar progress gelap */
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.custom-progress .progress-bar {
+    background-color: var(--primary) !important; /* Warna bar progress menggunakan primary */
+    transition: width 0.6s ease;
+}
+
+

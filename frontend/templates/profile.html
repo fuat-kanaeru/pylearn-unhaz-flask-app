@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+{% block title %}Profile — PyLearn{% endblock %}
+{% block content %}
+
+<!-- Menambahkan content-wrapper untuk membatasi lebar konten -->
+<div class="content-wrapper"> 
+  
+  <!-- Membatasi lebar form profil agar terlihat rapi -->
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+      
+      <!-- Menggunakan card glassmorphism dari style.css -->
+      <div class="card p-5 mt-4"> 
+        <!-- PERBAIKAN: Mengubah warna teks judul menjadi putih -->
+        <h3 class="mb-4 text-center text-white fw-bold">Profil Saya</h3>
+
+        <form method="POST" action="{{ url_for('auth.profile') }}">
+          <div class="mb-3">
+            <!-- PERBAIKAN: Mengubah warna label menjadi putih -->
+            <label class="form-label text-white">Nama</label> 
+            <input name="name" class="form-control" value="{{ user['name'] }}" required>
+          </div>
+          <div class="mb-3">
+            <!-- PERBAIKAN: Mengubah warna label menjadi putih -->
+            <label class="form-label text-white">Email</label>
+            <input name="email" type="email" class="form-control" value="{{ user['email'] }}" required>
+          </div>
+          <button class="btn btn-primary w-100 fw-bold" type="submit">Simpan Perubahan</button>
+        </form>
+
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.2);">
+
+        <!-- PERBAIKAN: Mengubah warna teks judul menjadi putih -->
+        <h5 class="mb-3 text-white fw-semibold">Ganti Password</h5>
+        <form method="POST" action="{{ url_for('auth.update_password') }}">
+          <div class="mb-3">
+            <!-- PERBAIKAN: Mengubah warna label menjadi putih -->
+            <label class="form-label text-white">Password Lama</label>
+            <input name="old_password" type="password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <!-- PERBAIKAN: Mengubah warna label menjadi putih -->
+            <label class="form-label text-white">Password Baru</label>
+            <input name="new_password" type="password" class="form-control" required minlength="6">
+          </div>
+          <button class="btn btn-outline-primary w-100 fw-bold" type="submit">Update Password</button>
+        </form>
+
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.2);">
+
+        <!-- PERBAIKAN: Mengubah warna teks judul menjadi putih -->
+        <h5 class="mb-3 text-white fw-semibold"><i class="bi bi-book me-2"></i> Progres Belajar (Per Pelajaran)</h5>
+        
+        <!-- PERBAIKAN: Menambahkan kelas kustom untuk list group item agar transparan/terbaca -->
+        <ul class="list-group list-group-flush mb-4 custom-list-group">
+          {% for prog in progress_data %}
+            <li class="list-group-item d-flex justify-content-between align-items-center custom-list-item">
+              
+              <div>
+                <!-- Text Muted sudah didefinisikan sebagai abu-abu terang, jadi ini terbaca -->
+                <small class="text-muted d-block">{{ prog['module_title'] }}</small>
+                <!-- PERBAIKAN: Mengubah warna link menjadi putih -->
+                <a href="{{ url_for('main.lesson_detail', id=prog['lesson_id']) }}" class="text-decoration-none fw-bold text-white">
+                  {{ prog['lesson_title'] }}
+                </a>
+              </div>
+              
+              <div class="d-flex align-items-center gap-3">
+                {% set progress_score = prog['score'] if prog['score'] is not none else 0 %}
+                {% set max_score = prog['max_score'] if prog['max_score'] is not none and prog['max_score'] > 0 else 1 %}
+                
+                {% if prog['max_score'] is not none and prog['max_score'] > 0 %}
+                    {% set percentage = (progress_score * 100 / max_score) | round(0) %}
+                {% else %}
+                    {% set percentage = 0 %}
+                {% endif %}
+                
+                <span class="badge {{ 'bg-success' if prog['completed'] == 1 else 'bg-warning text-dark' }} me-2 py-2 px-3 fw-bold rounded-pill">
+                    {{ '✅ Selesai' if prog['completed'] == 1 else percentage ~ '%' }}
+                </span>
+                
+                <div class="progress" style="width: 100px; height: 16px; background-color: rgba(255, 255, 255, 0.1);">
+                  <div class="progress-bar" role="progressbar" 
+                       style="width: {{ percentage }}%; background-color: #5882FA;" 
+                       aria-valuenow="{{ percentage }}" 
+                       aria-valuemin="0" aria-valuemax="100">
+                  </div>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+        
+        <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.2);">
+        
+        <div class="text-center">
+          <a class="btn btn-outline-danger fw-bold px-4" href="{{ url_for('auth.delete_account') }}">Hapus Akun</a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}
