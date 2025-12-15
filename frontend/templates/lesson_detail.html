@@ -31,21 +31,24 @@
   </div>
 
   {# ========================================================== #}
-  {# BAGIAN SOAL LATIHAN (ISIAN SINGKAT + PILIHAN GANDA) #}
+  {# BAGIAN SOAL LATIHAN (ISIAN SINGKAT) #}
   {# ========================================================== #}
-  {% if questions or mcqs %}
+  {% if questions %}
     <div class="card p-4 mb-4">
       <h5 class="fw-semibold mb-3">
           <i class="bi bi-patch-question me-2 text-primary"></i> 🧩 Latihan Soal
       </h5>
       
       {# ---------------------------------------------------- #}
-      {# 1. SOAL ISIAN SINGKAT (EXISTING LOGIC) #}
+      {# 1. SOAL ISIAN SINGKAT (PERBAIKAN LINE BREAK DENGAN <pre>) #}
       {# ---------------------------------------------------- #}
       {% for q in questions %}
         {% set is_answered = q['id'] in answered_ids_short %}
         <div class="mb-3" id="question-container-{{ q['id'] }}">
-          <p class="fw-semibold">{{ loop.index }}. {{ q['question'] }} <span class="badge bg-secondary ms-2">Isian Singkat</span></p>
+          
+          {# PERBAIKAN: Mengganti <p> dengan <pre> untuk mempertahankan line break dan indentasi #}
+          <pre class="fw-semibold question-code">{{ loop.index }}. {{ q['question'] }} <span class="badge bg-secondary ms-2">Isian Singkat</span></pre>
+          
           <div class="d-flex gap-2">
             <input type="text" class="form-control answer-input" placeholder="Ketik jawaban..." 
                    data-qid="{{ q['id'] }}" id="input-{{ q['id'] }}"
@@ -60,62 +63,6 @@
               <span class='text-success fw-semibold'>✅ Jawaban Benar sudah tersimpan!</span>
             {% endif %}
           </div>
-          {% if not loop.last or mcqs %}
-            <div class="my-4" style="height: 1px; background-color: var(--glass-border);"></div>
-          {% endif %}
-        </div>
-      {% endfor %}
-
-      {# ---------------------------------------------------- #}
-      {# 2. SOAL PILIHAN GANDA (NEW LOGIC) #}
-      {# ---------------------------------------------------- #}
-      {% for mcq in mcqs %}
-        {% set question_number = loop.index + questions|length %}
-        {% set answer_status = answered_mcqs_map.get(mcq['id']) %}
-        {% set is_answered = answer_status is not none %}
-        {% set is_correct = answer_status and answer_status['correct'] %}
-        {% set user_choice = answer_status['choice'] if is_answered else '' %}
-
-        <div class="mb-3" id="mcq-container-{{ mcq['id'] }}">
-          <p class="fw-semibold">{{ question_number }}. {{ mcq['question'] }} <span class="badge bg-info ms-2">Pilihan Ganda</span></p>
-          <div class="mcq-options-group" data-qid="{{ mcq['id'] }}">
-            
-            {% for option in ['A', 'B', 'C', 'D'] %}
-              {% set option_text = mcq['option_' + option.lower()] %}
-              {% set option_id = 'mcq-' ~ mcq['id'] ~ '-' ~ option %}
-              
-              <div class="form-check p-0 mb-2">
-                <input class="form-check-input d-none mcq-radio" type="radio" 
-                       name="mcq-{{ mcq['id'] }}" id="{{ option_id }}" 
-                       value="{{ option }}" data-qid="{{ mcq['id'] }}"
-                       {% if is_answered %} disabled {% endif %}
-                       {% if user_choice == option %} checked {% endif %}>
-                       
-                <label class="form-check-label w-100 p-2 rounded-3 border mcq-label 
-                              {% if is_answered %} 
-                                {% if user_choice == option %} 
-                                  {{ 'bg-success text-white border-success' if is_correct else 'bg-danger text-white border-danger' }} 
-                                {% endif %}
-                              {% endif %}"
-                       for="{{ option_id }}"
-                       data-option="{{ option }}">
-                       
-                  <span class="fw-bold me-2">{{ option }}.</span> {{ option_text }}
-                </label>
-              </div>
-            {% endfor %}
-            
-          </div>
-          <div class="feedback mt-2" id="mcq-feedback-{{ mcq['id'] }}">
-            {% if is_answered %}
-              {% if is_correct %}
-                <span class='text-success fw-semibold'>✅ Pilihan Anda Benar!</span>
-              {% else %}
-                <span class='text-danger fw-semibold'>❌ Pilihan Salah. Jawaban Anda: {{ user_choice }}.</span>
-              {% endif %}
-            {% endif %}
-          </div>
-          
           {% if not loop.last %}
             <div class="my-4" style="height: 1px; background-color: var(--glass-border);"></div>
           {% endif %}
@@ -134,10 +81,10 @@
   </div>
 </div>
 
-{# Script Cek Jawaban (AJAX) #}
+{# Script Cek Jawaban (AJAX) - Logika MCQ Dihapus #}
 <script>
 // ===================================================
-// A. LOGIKA UNTUK ISIAN SINGKAT (TETAP SAMA)
+// A. LOGIKA UNTUK ISIAN SINGKAT
 // ===================================================
 document.querySelectorAll('.check-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
@@ -174,86 +121,6 @@ document.querySelectorAll('.check-btn').forEach(btn => {
   });
 });
 
-
-// ===================================================
-// B. LOGIKA UNTUK PILIHAN GANDA (MCQ - BARU)
-// ===================================================
-
-// Fungsi untuk menonaktifkan semua pilihan dan memberi highlight
-function finalizeMcq(qid, userChoice, correctOption, isCorrect) {
-    const container = document.querySelector(`.mcq-options-group[data-qid="${qid}"]`);
-    const radios = container.querySelectorAll('.mcq-radio');
-    const labels = container.querySelectorAll('.mcq-label');
-    const feedback = document.getElementById(`mcq-feedback-${qid}`);
-    
-    radios.forEach(radio => {
-        radio.disabled = true;
-    });
-
-    labels.forEach(label => {
-        const option = label.dataset.option;
-        label.classList.remove('bg-primary', 'border-primary'); // Hapus hover/active
-
-        if (option === userChoice) {
-            // Pilihan user
-            if (isCorrect) {
-                label.classList.add('bg-success', 'text-white', 'border-success');
-                feedback.innerHTML = "<span class='text-success fw-semibold'>✅ Pilihan Anda Benar! Progres diperbarui.</span>";
-            } else {
-                label.classList.add('bg-danger', 'text-white', 'border-danger');
-                feedback.innerHTML = `<span class='text-danger fw-semibold'>❌ Pilihan Salah. Jawaban yang benar adalah ${correctOption}.</span>`;
-            }
-        }
-        // Highlight jawaban yang benar (hanya jika salah)
-        if (!isCorrect && option === correctOption) {
-             label.classList.add('bg-warning', 'text-dark', 'border-warning');
-        }
-    });
-}
-
-document.querySelectorAll('.mcq-radio').forEach(radio => {
-    if (!radio.disabled) {
-        radio.addEventListener('change', async (event) => {
-            const qid = radio.dataset.qid;
-            const userChoice = radio.value;
-            
-            // Nonaktifkan sementara untuk mencegah double submit
-            document.querySelector(`.mcq-options-group[data-qid="${qid}"]`).style.pointerEvents = 'none';
-
-            const res = await fetch("{{ url_for('main.submit_mcq_answer') }}", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question_id: qid, user_choice: userChoice })
-            });
-            const data = await res.json();
-            
-            // Aktifkan kembali
-            document.querySelector(`.mcq-options-group[data-qid="${qid}"]`).style.pointerEvents = 'auto';
-
-            if (data.status === "correct") {
-                finalizeMcq(qid, userChoice, data.user_choice, true);
-            } else if (data.status === "wrong") {
-                finalizeMcq(qid, userChoice, data.correct_option, false);
-            } else {
-                const feedback = document.getElementById(`mcq-feedback-${qid}`);
-                feedback.innerHTML = `<span class='text-warning'>${data.message}</span>`;
-            }
-        });
-    } else {
-        // Jika sudah dijawab, pastikan label benar disorot (untuk kasus salah)
-        const qid = radio.dataset.qid;
-        const container = document.querySelector(`.mcq-options-group[data-qid="${qid}"]`);
-        const feedback = document.getElementById(`mcq-feedback-${qid}`);
-        
-        // Cek jika sudah dijawab, dan jawabannya salah
-        if (feedback.innerHTML.includes('Pilihan Salah')) {
-            // Cari jawaban yang benar dari data JSON (tidak bisa dilakukan di frontend tanpa request baru)
-            // Namun, karena kita sudah menyorot jawaban user yang salah saat render, kita biarkan saja
-            // Logika ini sudah ditangani oleh Jinja:
-            // label class: if user_choice == option then set bg-danger (jika is_correct=false)
-        }
-    }
-});
 </script>
 
 <style>
@@ -268,56 +135,18 @@ document.querySelectorAll('.mcq-radio').forEach(radio => {
     opacity: 1; 
 }
 
-/* Styling untuk Pilihan Ganda */
-.mcq-label {
-    cursor: pointer;
-    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
-    border: 1px solid var(--glass-border) !important;
+/* ------------------------------------------------ */
+/* STYLE BARU UNTUK KODE DENGAN TAG <pre> */
+/* ------------------------------------------------ */
+pre.question-code {
+    white-space: pre-wrap; /* Memastikan baris panjang membungkus */
+    font-family: monospace; /* Menggunakan font kode */
+    font-size: 1rem; /* Ukuran yang nyaman dibaca */
+    color: var(--white); /* Memastikan warna teks tetap putih */
 }
 
-/* Hover effect */
-.mcq-label:hover {
-    background-color: var(--glass-bg-hover);
-    border-color: var(--primary) !important;
-}
+/* Styling untuk Pilihan Ganda (Dihapus dari sini, hanya menyisakan style input isian singkat) */
 
-/* Active/Checked state (khusus untuk tampilan default sebelum submit) */
-.mcq-radio:checked + .mcq-label {
-    border-color: var(--primary) !important;
-    background-color: var(--glass-bg-active);
-}
-
-/* Disabled state */
-.mcq-radio:disabled + .mcq-label {
-    cursor: default;
-    opacity: 0.8;
-}
-
-/* Jika sudah dijawab, hapus hover */
-.mcq-radio:disabled + .mcq-label:hover {
-    background-color: transparent;
-    border-color: var(--glass-border) !important;
-}
-
-/* Style untuk jawaban benar (hijau) yang sudah diset di JS */
-.mcq-label.bg-success {
-    background-color: var(--success) !important;
-    border-color: var(--success) !important;
-}
-
-/* Style untuk jawaban salah (merah) yang sudah diset di JS */
-.mcq-label.bg-danger {
-    background-color: var(--danger) !important;
-    border-color: var(--danger) !important;
-}
-
-/* Style untuk jawaban benar (kuning) setelah user jawab salah */
-.mcq-label.bg-warning {
-    background-color: var(--warning) !important;
-    color: var(--dark) !important;
-    border-color: var(--warning) !important;
-    font-weight: bold;
-}
 </style>
 
 {% endblock %}
